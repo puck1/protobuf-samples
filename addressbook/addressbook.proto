@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+// The ".proto" file starts with a package declaration, 
+// which helps to prevent naming conficts between different projects.
+package tutorial;
+
+// Protoc's includes
+import "google/protobuf/timestamp.proto";
+
+// The option "go_package" defines what the generated package structure is.
+// The generated go package name is the last part of this package.
+// To complile to get go package, use command "protoc -I=$SRC_DIR --go_out=$DST_DIR $SRC_DIR/addressbook.proto".
+// For example, use the command "protoc -I=. --go_out=. ./addressbook.proto" to compile this file,
+// and you will get the package in current dir(".").
+// You will get a single file if didn't specify go_package.
+// option go_package = "github.com/protocolbuffers/protobuf/examples/go/tutorialpb";
+
+// A "message" likes a struct contains standard simple data types or other message types.
+message Person {
+	// The "=1", "=2" markers identify the unique "tag" that field uses in the binary encoding.
+	// Tag number 1-15 require one less byte to encode than higher numbers,
+	// so it's a better choice to use those tags for commonly used or repeated elements.
+	string name = 1;
+	int32 id = 2;
+	string email = 3;
+	// The field values above are not set so a default "zero/empty string/false" value is set used
+
+	enum PhoneType {
+		// enum values: 0,1,2
+		MOBILE = 0;
+		HOME = 1;
+		WORK = 2;
+	}
+
+	message PhoneNumber {
+		string number = 1;
+		PhoneType type = 2;
+	}
+
+	// The "repeated" field may be repeated any number of times(incliude 0).
+	// Think of repeated fields as dynamically sized arrays.
+	repeated PhoneNumber phones = 4;
+
+	google.protobuf.Timestamp last_updated = 5;
+}
+
+message AddressBook {
+	repeated Person people = 1;
+}
+
+/* Extending a Protocok Buffer:
+ * You MUST NOT change the tag numbers of any existing fields.
+ * You MAY delete fields.
+ * You MAY add new fields but you MUST use fresh tag numbers.
+ * (i.e. tag numbers that were nerver used in this protocol buffer, not even by deleted fields)
+ * There are some [exceptions](https://developers.google.com/protocol-buffers/docs/proto3#updating) to these rules, but they are rarely used.
+ */
+
+/* Reference: 
+ * [Protocol Buffer Basics: Go](https://developers.google.com/protocol-buffers/docs/gotutorial)
+ * [Go Generated Code](https://developers.google.com/protocol-buffers/docs/reference/go-generated#nested-types)
+ */
+

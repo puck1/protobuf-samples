@@ -1,0 +1,4 @@
+*.data
+*_go
+*_gotest
+tutorialpb
